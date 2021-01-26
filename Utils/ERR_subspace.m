@@ -4,10 +4,14 @@ function [ERR] = ERR_subspace(U, Uhat, d)
     
     I = length(d);
     %% Input validity check
+    
     if ~ (iscell(U) && iscell(Uhat))
         error('[ERROR] Inputs must be cell arrays.');
     end
-    if ~isequal(size(U),size(Uhat))
+    if isempty(Uhat)
+        ERR = [];
+        return
+    elseif ~isequal(size(U),size(Uhat))
         error('[ERROR] The cell arrays must be of the same sizes.')
     end
     for i = 1:I

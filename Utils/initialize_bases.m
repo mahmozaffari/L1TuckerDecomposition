@@ -1,6 +1,7 @@
 function [UL1, UL2] = initialize_bases(N, D, d, init_method, varargin)
-%GENERATE_BASES Summary of this function goes here
-%   Detailed explanation goes here
+% * if init_method is 'HOSVD', returns UL1 initialized by L1HOSVD (for L1
+% methods), and UL2, initialized by L2HOSVD (for L2 methods)
+% * if init_method is  'default', UL1=UL2 are both randomly initialized.
 
 valid_init_strs = ["default", "HOSVD"];%, "L1HOSVD"];
 validatestring(init_method,valid_init_strs);
