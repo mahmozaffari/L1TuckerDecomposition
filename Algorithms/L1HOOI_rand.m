@@ -1,5 +1,7 @@
 function [U,G,Xhat,L1met_end,stats,funcname,stats_T1] = L1HOOI_rand(X, Ks, Uin, varargin)
-    
+    %% L1HOOI with random selection of basis to update:
+    % In each iteration a single basis is selected for update
+    % two consecutive basis can't be same (otherwise convergence criteria will meet and algorithm would stop)
     params = inputParser;
     params.addParameter('tol',1e-8,@isscalar);
     params.addParameter('maxit',1000,@(x) isscalar(x) & x>0);
