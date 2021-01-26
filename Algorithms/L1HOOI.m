@@ -18,6 +18,7 @@ function [U,G,Xhat,L1met_end,stats,funcname,stats_T1] = L1HOOI(X, Ks, Uin, varar
     % L1LHOOI/L1p[(T=1)][(RP)], L1HOOI/L2p[(T=1)][(RP)]
     % stats_T1: struct of algorithm results for T=1. stats_T1.U contains
     % bases at the end of T=1, stats_T1.RERR, stats_T1.SERR contain reconstruction errors, and subspace errors up-to the end of firt iteration 
+    % stats.L_metric: objective function value after each basis update
     %% Usage 2: [U, G, Xhat, L1met_end,stats,funcname,stats_T1] = L1HOOI(X, Ks, U0,'tol',tol,'maxit',maxit)
     % tol: optimization tolerance (default: 1e-8)
     % maxit: maximum number of iterations  (default: 1000)
