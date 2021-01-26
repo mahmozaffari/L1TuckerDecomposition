@@ -10,10 +10,6 @@ function [U,G,Xhat,L1met_end,stats,funcname,stats_T1] = L1HOOI(X, Ks, Uin, varar
     %  U: cell array of same size as Uin, contains the computed bases.
     % L1met_end: the value of objective function at the end.
     % stats: struct containing some information about algorithm execution
-    % stats.update_types : list of the indexes of basis (0 for updating
-    % B), in the order they are updated in algorithm execution
-    % stats.RERR: list of reconstruction errors after each basis update
-    % stats.SERR: list of suspace errors after each basis update
     % funcname: returns the name for the algorithm configuration, includes
     % L1LHOOI/L1p[(T=1)][(RP)], L1HOOI/L2p[(T=1)][(RP)]
     % stats_T1: struct of algorithm results for T=1. stats_T1.U contains
@@ -32,15 +28,13 @@ function [U,G,Xhat,L1met_end,stats,funcname,stats_T1] = L1HOOI(X, Ks, Uin, varar
     % Note: if projection is set to 'L1', T is set to 10. change the
     % corresponding lines (about lines 70).
     %% Usage 5: [U, G, Xhat, L1met_end,stats,funcname,stats_T1] = L1HOOI(X, Ks, U0, 'selection', selection)
-    % valid values for selection are 'default' (for increasing index
-    % computation), 'random' (for random permutation computation), or a
-    % list of and ordering of numbers between 1 to I (for fixed custom
-    % ordering computation)
+    % valid values for selection are 'default' (for increasing index com, 'random'
     %% Optional Arguments:
     %  Un_true: true basis, for calculation of Subspace error vs. basis
     %  update index
     %  X_clean: Clean tensor for computation of Reconstruction errors vs.
     %  updates
+    %% 
     %% 
     params = inputParser;
     params.addParameter('tol',1e-8,@isscalar);
