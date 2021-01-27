@@ -113,7 +113,7 @@ function [] = test_Tucker(Ds, ds, varargin)
             id2name{i,1} = i; id2name{i,2} = name_T1;
         end
     end
-    
+    P = size(id2name,1);
     % Algorithm params
     init_method = params.Results.init_method;
     tol = params.Results.tol;
