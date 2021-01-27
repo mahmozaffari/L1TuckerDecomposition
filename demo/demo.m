@@ -32,7 +32,7 @@ maxit = 100;
 for i = 1:length(outlier_sigmas)
     sigma_o = outlier_sigmas(i);
     outdir = fullfile(experiment_folder,['sN' num2str(sigma_n) '-pO' num2str(N_o) '-sO' num2str(sigma_o)]);
-    test_Tucker(D , d, Un_true, G_true, outdir, 'R', itr, 'sigma_o', sigma_o, 'sigma_n', sigma_n, 'P_o', N_o, 'P_type', 'count', 'init_method', init_method,'maxit',maxit)
+    test_Tucker(D, d, Un_true, G_true, outdir, 'R', itr, 'sigma_o', sigma_o, 'sigma_n', sigma_n, 'P_o', N_o, 'P_type', 'count', 'init_method', init_method,'maxit',maxit)
 end
 
 %% Test function
@@ -95,7 +95,7 @@ function [] = test_Tucker(Ds, ds, varargin)
     onr = getONR_sparse(Ds, 'sigma_o', sigma_o, 'sigma_n', sigma_n, 'P', P_o, 'P_type', P_type);
 %     onr_emp = 0;        % empirical ONR
     %% algorithms
-    alg_names = {'L1HOOI/L2proj', 'L1HOOI/L2proj(Rand)' ,'L1HOOI/L1proj', 'L1HOOI/L1proj(Rand)','L1HOOI/L1proj(RP)','L2HOOI/L2proj','L2HOOI/L2proj(Rand)','L1HOSVD','L2HOSVD'};
+    alg_names = {'L1HOOI/L2proj', 'L1HOOI/L2proj(Rand)' ,'L1HOOI/L1proj', 'L1HOOI/L1proj(Rand)','L1HOOI/L1proj(RP)','L2HOOI/L2proj','L1HOSVD','L2HOSVD'};
     exclude_for_T1 = {'L1HOSVD','L2HOSVD', 'L2HOOI/L2proj'};
     P = length(alg_names);
     name2id = containers.Map;
