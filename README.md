@@ -6,7 +6,5 @@ Dependencies: Tensor Toolbox (https://tensortoolbox.com/)
 ## Algorithms:
 
 1) L1HOSVD
-2) L2HOSVD
-3) L2HOOI
-4) L1HOOI
+2) L1HOOI
 
