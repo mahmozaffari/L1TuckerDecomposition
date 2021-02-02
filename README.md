@@ -55,7 +55,7 @@ Dependencies: Tensor Toolbox (https://tensortoolbox.com/)
   - **L1-HOOI/L1 projection (Increasing Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin, 'proj', 'L1')
   - **L1-HOOI/L2 projection (random permutation Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin, 'selection', 'random')
   - **L1-HOOI/L1 projection (random permutation Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin, 'proj', 'L1', 'selection', 'random')
-  - **L1-HOOI/L2 projection (T=1):** [U, G, Xhat] = L1HOOI(X, Ks, Uin, 'T', 1) (or use  [~,~,~,~,~,~, stats_T1] = L1HOOI(X, Ks, Uin) for concurrent computation of L1-HOOI/L2 projection and L1-HOOI/L2 projection(T=1))
+  - **L1-HOOI/L2 projection (T=1):** [U, G, Xhat] = L1HOOI(X, Ks, Uin, 'T', 1) (or use  [\~ ,\~ ,\~ ,\~ ,\~ ,\~ , stats_T1] = L1HOOI(X, Ks, Uin) for concurrent computation of L1-HOOI/L2 projection and L1-HOOI/L2 projection(T=1))
   - **L1-HOOI/L1 projection (T=1):** [U, G, Xhat] = L1HOOI(X, Ks, Uin, 'proj', 'L1', 'T', 1)
 
 
