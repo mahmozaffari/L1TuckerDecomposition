@@ -5,7 +5,7 @@ Dependencies: Tensor Toolbox (https://tensortoolbox.com/)
 
 ## Algorithms:
 
-- **L1HOSVD**
+**L1HOSVD**
   - **Usage:** [U, G, Xhat, L1met, stats]=L1HOSVD(X, Ks, Uin, *'tol'*, tol, *'maxit'*, maxit, *'X_clean'*, X_clean, *'Un_true'*, Un_true)
   - **Inputs:**
     - **X:** I-way Input Tensor of size (D = [D1 D2 ... DI])
@@ -25,7 +25,7 @@ Dependencies: Tensor Toolbox (https://tensortoolbox.com/)
       - stats.RERR: list of reconstruction errors after each basis update
       - stats.SERR: list of subspace errors after each basis update
 
-- **L1HOOI function:**
+**L1HOOI function:**
   - **Usage:** [U,G,Xhat,L1met_end,stats,funcname,stats_T1] = L1HOOI(X, Ks, Uin, *'tol'*, tol, *'maxit'*, maxit, *'X_clean'*, X_clean, *'Un_true'*, Un_true, 'T',inf, 'selection', selection)
   - **Inputs:**
     - **X:** I-way Input Tensor of size (D = [D1 D2 ... DI])
@@ -50,13 +50,13 @@ Dependencies: Tensor Toolbox (https://tensortoolbox.com/)
     - **funcname** name of the function configuration (e.g. 'L1HOOI/L2proj': is returned for above function call if T is not given)
     - **stats_T1:** struct containing some information about algorithm execution, until the end of round 1
     
-  - **_Configuration usages:_**
-    - **L1-HOOI/L2 projection (Increasing Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin)
-    - **L1-HOOI/L1 projection (Increasing Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin, 'proj', 'L1')
-    - **L1-HOOI/L2 projection (random permutation Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin, 'selection', 'random')
-    - **L1-HOOI/L1 projection (random permutation Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin, 'proj', 'L1', 'selection', 'random')
-    - **L1-HOOI/L2 projection (T=1):** [U, G, Xhat] = L1HOOI(X, Ks, Uin, 'T', 1) (or use  [~,~,~,~,~,~, stats_T1] = L1HOOI(X, Ks, Uin) for concurrent computation of L1-HOOI/L2 projection and L1-HOOI/L2 projection(T=1))
-    - **L1-HOOI/L1 projection (T=1):** [U, G, Xhat] = L1HOOI(X, Ks, Uin, 'proj', 'L1', 'T', 1)
+## L1HOOI Configurations:
+  - **L1-HOOI/L2 projection (Increasing Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin)
+  - **L1-HOOI/L1 projection (Increasing Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin, 'proj', 'L1')
+  - **L1-HOOI/L2 projection (random permutation Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin, 'selection', 'random')
+  - **L1-HOOI/L1 projection (random permutation Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin, 'proj', 'L1', 'selection', 'random')
+  - **L1-HOOI/L2 projection (T=1):** [U, G, Xhat] = L1HOOI(X, Ks, Uin, 'T', 1) (or use  [~,~,~,~,~,~, stats_T1] = L1HOOI(X, Ks, Uin) for concurrent computation of L1-HOOI/L2 projection and L1-HOOI/L2 projection(T=1))
+  - **L1-HOOI/L1 projection (T=1):** [U, G, Xhat] = L1HOOI(X, Ks, Uin, 'proj', 'L1', 'T', 1)
 
 
 
