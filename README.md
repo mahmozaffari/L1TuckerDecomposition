@@ -19,7 +19,7 @@ Dependencies: Tensor Toolbox (https://tensortoolbox.com/)
     - **U:** Factor matrices
     - **G:** Tensor core    (tensor of size Ks)
     - **Xhat:** Reconstruction of X
-    - **L1met: The value of the objective function (L1-metric of tensor core) at the end of computation
+    - **L1met:** The value of the objective function (L1-metric of tensor core) at the end of computation
     - **stats:** struct containing some information about algorithm execution
       - stats.update_types : list of the indexes of basis (0 for updating B), in the order they are updated in algorithm execution
       - stats.RERR: list of reconstruction errors after each basis update
