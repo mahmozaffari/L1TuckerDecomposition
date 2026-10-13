@@ -1,62 +1,113 @@
-# L1 Tucker Decomposition
-This repository contains alternating optimization algorithms for L1-norm tucker decomposition
+# L1-Norm Tucker Decomposition
 
-Dependencies: Tensor Toolbox (https://tensortoolbox.com/)
+Python implementation of alternating-optimization algorithms for outlier-resistant L1-norm Tucker decomposition (L1-Tucker): L1-HOSVD, L1-HOOI (with fixed, random-permutation or random single-mode update orders), and L1T-L1F, together with the standard HOSVD and HOOI baselines.
 
-## Algorithms:
+Standard Tucker decomposition (HOSVD, HOOI) fits the data in the L2 norm and breaks down when a few entries are grossly corrupted. L1-Tucker instead finds the orthonormal bases that maximize the L1 norm of the core, which makes it far more robust. L1-HOSVD computes each basis by L1-PCA of the corresponding unfolding of the data; L1-HOOI refines the bases jointly, one mode at a time. L1T-L1F ([Mozaffari et al., EUSIPCO 2021](https://doi.org/10.23919/EUSIPCO54536.2021.9616014)) replaces the projection step of L1-HOOI by an L1-norm fit, which removes most of the influence of outliers.
 
-**L1HOSVD**
-  - **Usage:** [U, G, Xhat, L1met, stats]=L1HOSVD(X, Ks, Uin, *'tol'*, tol, *'maxit'*, maxit, *'X_clean'*, X_clean, *'Un_true'*, Un_true)
-  - **Inputs:**
-    - **X:** I-way Input Tensor of size (D = [D1 D2 ... DI])
-    - **Ks:** Low-rank tensor core size (Ks = [d1 d2 ... dI])
-    - **Uin:** Initial Factor matrices (cell array of length I, where Uin{i} is a matrix of size Di by di)
-    - *(Optional)* **tol:** optimization tolerance (default value: 1e-4)
-    - *(Optional)* **maxit:** maximum number of algorithm iterations  (default value: 50)
-    - *(Optional)* **X_clean:** Nominal input tensor (input tensor without noises or outliers) [If given, stats.RERR returns reconstruction error vs. basis updates]
-    - *(Optional)* **Un_true:** Nominal factor matrices (If given, algorithm returns subspace error vs. basis update indexes, in stats.SERR)
-  - **Outputs:**
-    - **U:** Factor matrices
-    - **G:** Tensor core    (tensor of size Ks)
-    - **Xhat:** Reconstruction of X
-    - **L1met:** The value of the objective function (L1-metric of tensor core) at the end of computation
-    - **stats:** struct containing some information about algorithm execution
-      - stats.update_types : list of the indexes of basis (0 for updating B), in the order they are updated in algorithm execution
-      - stats.RERR: list of reconstruction errors after each basis update
-      - stats.SERR: list of subspace errors after each basis update
+The original MATLAB code is kept in [`matlab/`](matlab). The code accompanying the EUSIPCO 2021 paper is also published at [Markopoulos-Research/Improved-L1-Tucker-via-L1-Fitting](https://github.com/Markopoulos-Research/Improved-L1-Tucker-via-L1-Fitting).
 
-**L1HOOI function:**
-  - **Usage:** [U,G,Xhat,L1met_end,stats,funcname,stats_T1] = L1HOOI(X, Ks, Uin, *'tol'*, tol, *'maxit'*, maxit, *'X_clean'*, X_clean, *'Un_true'*, Un_true, 'T',inf, 'selection', selection)
-  - **Inputs:**
-    - **X:** I-way Input Tensor of size (D = [D1 D2 ... DI])
-    - **Ks:** Low-rank tensor core size (Ks = [d1 d2 ... dI])
-    - **Uin:** Initial Factor matrices (cell array of length I, where Uin{i} is a matrix of size Di by di)
-    - *(Optional)* **proj:** 'L2'(default) for L1HOOI with L2-projection, 'L1' for L1HOOI with L1-projection
-    - *(Optional)* **tol:** optimization tolerance (default value: 1e-8)
-    - *(Optional)* **maxit:** maximum number of algorithm iterations  (default value: 1000)
-    - *(Optional)* **X_clean:** Nominal input tensor (input tensor without noises or outliers) [If given, stats.RERR returns reconstruction error vs. basis updates]
-    - *(Optional)* **Un_true:** Nominal factor matrices (If given, algorithm returns subspace error vs. basis update indexes, in stats.SERR)
-    - *(Optional)* **T:** If set to a number, it controls the maximum iterations for the outer loop( e.g. set T = 1 for one round of U matrix updates)
-    - *(Optional)* **selection:** input options are 'default' (for increasing order), 'random' (update in a random order of basis matrices randomly picked at each outer iteration), or a list specifying the order of basis updates (e.g. [3, 1, 2])
-  - **Outputs:**
-    - **U:** Factor matrices
-    - **G:** Tensor core    (tensor of size Ks)
-    - **Xhat:** Reconstruction of X
-    - **L1met_end: The value of the objective function (L1-metric of tensor core) at the end of computation
-    - **stats:** struct containing some information about algorithm execution
-      - stats.update_types : list of the indexes of basis (0 for updating B), in the order they are updated in algorithm execution
-      - stats.RERR: list of reconstruction errors after each basis update
-      - stats.SERR: list of subspace errors after each basis update
-    - **funcname** name of the function configuration (e.g. 'L1HOOI/L2proj': is returned for above function call if T is not given)
-    - **stats_T1:** struct containing some information about algorithm execution, until the end of round 1
-    
-## L1HOOI Configurations:
-  - **L1-HOOI/L2 projection (Increasing Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin)
-  - **L1-HOOI/L1 projection (Increasing Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin, 'proj', 'L1')
-  - **L1-HOOI/L2 projection (random permutation Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin, 'selection', 'random')
-  - **L1-HOOI/L1 projection (random permutation Order):** [U,G,Xhat] = L1HOOI(X, Ks, Uin, 'proj', 'L1', 'selection', 'random')
-  - **L1-HOOI/L2 projection (T=1):** [U, G, Xhat] = L1HOOI(X, Ks, Uin, 'T', 1) (or use  [\~ ,\~ ,\~ ,\~ ,\~ ,\~ , stats_T1] = L1HOOI(X, Ks, Uin) for concurrent computation of L1-HOOI/L2 projection and L1-HOOI/L2 projection(T=1))
-  - **L1-HOOI/L1 projection (T=1):** [U, G, Xhat] = L1HOOI(X, Ks, Uin, 'proj', 'L1', 'T', 1)
+## Installation
 
+```bash
+pip install git+https://github.com/mahmozaffari/L1TuckerDecomposition.git
+```
 
+or, from a clone, `pip install -e .`. The only dependencies are NumPy and SciPy (>= 1.7, for the HiGHS LP solver). Python >= 3.8.
 
+## Quick start
+
+```python
+import numpy as np
+from l1tucker import hooi, l1t_l1f, subspace_error
+from l1tucker.synthetic import low_rank_tensor, sparse_outliers
+
+dims, ranks = (5, 8, 5, 8, 5), (3, 3, 2, 2, 2)
+rng = np.random.default_rng(0)
+X, core, U_true = low_rank_tensor(dims, ranks, core_std=3.0, rng=rng)
+X_corr = X + rng.standard_normal(dims) + sparse_outliers(dims, std=16, count=10, rng=rng)
+
+res = l1t_l1f(X_corr, ranks)          # L1-HOSVD init + one L1-fitting sweep
+print(subspace_error(U_true, res.factors))                    # L1T-L1F
+print(subspace_error(U_true, hooi(X_corr, ranks).factors))    # standard HOOI
+
+res.factors        # list of orthonormal bases U_n, shape (D_n, d_n)
+res.core           # X x_1 U_1^T ... x_N U_N^T
+res.reconstruct()  # low-rank approximation of X_corr
+```
+
+## API
+
+| Function | Description |
+|---|---|
+| `l1t_l1f(X, ranks, T=1, init=None, ...)` | L1T-L1F (Algorithm 1 of the paper). `T` repeats the L1-fitting sweep; the paper also reports `T=10`. |
+| `l1hooi(X, ranks, init=None, proj="L2", T=None, order=None, ...)` | L1-HOOI. `proj="L2"` is L1-HOOI with L2 projection; `proj="L1"` is the L1-fitting variant, i.e. L1T-L1F. `order` is increasing (default), `"random"` (new permutation every sweep) or a fixed permutation. |
+| `l1hooi_random(X, ranks, init=None, proj="L2", T=None, ...)` | L1-HOOI variant that updates a single randomly chosen mode per iteration (never the same mode twice in a row); `T` counts single-mode updates. |
+| `l1hosvd(X, ranks, init=None, ...)` | L1-HOSVD: L1-PCA of every mode unfolding. |
+| `l1pca(A, init, ...)` | L1-PCA of a matrix by fixed-point iterations. |
+| `l1_regression(W, x)` | `argmin_g ||W g - x||_1` by linear programming. |
+| `hosvd(X, ranks)`, `hooi(X, ranks, init=None)` | Standard L2 Tucker baselines (sequentially truncated HOSVD, and HOOI as in Tensor Toolbox's `tucker_als`). |
+| `subspace_error(U_true, U_hat)` | MANSSE, Eq. (13). |
+| `reconstruction_error(X, X_hat)` | `||X - X_hat||_F^2 / ||X||_F^2`. |
+| `l1tucker.synthetic` | Random orthonormal bases, Tucker tensors, sparse outliers and the ONR of Eq. (12). |
+
+Every decomposition returns a `TuckerResult` with `factors`, `core`, `reconstruct()` and a `history` dict with the L1 metric after every basis update (plus subspace and reconstruction errors when `U_true` / `X_clean` are passed). `l1hooi` also returns `first_sweep`, the result after the first sweep, so one `T=10` run gives the `T=1` result as well. The L1 methods are initialized at L1-HOSVD, itself initialized at HOSVD, unless `init` is given.
+
+## Example: synthetic subspace estimation
+
+The script below reproduces Fig. 2 of the EUSIPCO 2021 paper.
+
+```bash
+pip install matplotlib
+python examples/synthetic_subspace.py --trials 100 --out results/fig2
+```
+
+A 5 x 8 x 5 x 8 x 5 tensor of ranks (3, 3, 2, 2, 2) with a N(0, 9) core is corrupted by N(0, 1) noise and 10 outliers drawn from N(0, sigma_o^2), sigma_o = 0, 2, ..., 16, and the mean MANSSE of each method is reported against the outlier-to-noise ratio (ONR).
+
+Result with this implementation (100 trials per point, seed 0, about 15 minutes on 8 cores):
+
+<p align="center"><img src="docs/fig2_reproduction.png" width="480" alt="Mean MANSSE vs ONR for HOSVD, HOOI, L1-HOSVD, L1-HOOI and L1T-L1F"></p>
+
+| ONR | HOSVD | HOOI | L1-HOSVD | L1-HOOI | L1T-L1F | L1T-L1F (T=10) |
+|---:|---:|---:|---:|---:|---:|---:|
+| 0.000 | 0.095 | **0.021** | 0.142 | 0.031 | 0.050 | 0.041 |
+| 0.005 | 0.095 | **0.022** | 0.147 | 0.035 | 0.059 | 0.043 |
+| 0.020 | 0.096 | **0.022** | 0.144 | 0.032 | 0.056 | 0.043 |
+| 0.045 | 0.142 | 0.062 | 0.161 | 0.044 | 0.066 | **0.043** |
+| 0.080 | 0.256 | 0.217 | 0.191 | 0.059 | 0.072 | **0.041** |
+| 0.125 | 0.325 | 0.339 | 0.205 | 0.113 | 0.091 | **0.044** |
+| 0.180 | 0.423 | 0.454 | 0.225 | 0.209 | 0.100 | **0.043** |
+| 0.245 | 0.474 | 0.507 | 0.244 | 0.312 | 0.112 | **0.042** |
+| 0.320 | 0.497 | 0.537 | 0.245 | 0.330 | 0.111 | **0.047** |
+
+As in the paper, HOSVD and HOOI break down beyond an ONR of about 0.05, L1-HOSVD degrades slowly, and L1-HOOI lies in between. L1T-L1F with `T=10` stays almost flat and has the lowest error from ONR 0.045 on; a single sweep (`T=1`) already beats every other method from ONR 0.125 on. The absolute values depend on the fixed ground-truth core and bases: across 12 random instances, the error of plain HOSVD at ONR = 0 ranges from 0.05 to 0.13, and some instances match the curves of the paper closely.
+
+## Implementation notes
+
+- **L1 fitting.** Each row of the fitted core, Eq. (7), is an L1 regression. It is solved exactly as a linear program with SciPy's HiGHS solver, through the LP dual (`max x^T y` s.t. `W^T y = 0`, `|y| <= 1`), which is about 10 times faster than the primal for these tall problems. The run times in the paper were obtained with ADMM instead.
+- **L1-PCA.** As in the original MATLAB code, L1-PCA is computed by the fixed-point iteration `B = sign(A^T Q)`, `Q = U V^T` with `A B = U S V^T`, started at the current basis, which increases `||A^T Q||_1` monotonically.
+- **Conventions.** Unfoldings follow Kolda and Bader, the convention of the MATLAB Tensor Toolbox, so unfoldings and Kronecker products are ordered exactly as in the MATLAB code.
+- **Differences from the MATLAB code.** The ground-truth arguments (`X_clean`, `U_true`) are truly optional (the MATLAB `L1HOOI` failed without them). For `proj="L1"`, `T` defaults to 10 as in MATLAB, but a larger `T` can be passed explicitly. L1-HOSVD defaults to `tol=1e-8`, `maxit=1000`, the settings of the paper's experiments. The Tensor Toolbox is no longer needed.
+
+## MATLAB code
+
+The original MATLAB implementation (`L1HOSVD.m`, `L1HOOI.m`, `L1HOOI_rand.m`, utilities and the experiment script `demo/demo.m`) is in [`matlab/`](matlab), with its usage documented in [`matlab/README.md`](matlab/README.md). It requires the [Tensor Toolbox](https://www.tensortoolbox.org/).
+
+## References
+
+- P. P. Markopoulos, D. G. Chachlakis and A. Prater-Bennette, "L1-norm higher-order singular-value decomposition," *IEEE GlobalSIP*, 2018.
+- D. G. Chachlakis, A. Prater-Bennette and P. P. Markopoulos, "L1-norm Tucker tensor decomposition," *IEEE Access*, vol. 7, pp. 178454-178465, 2019.
+- D. G. Chachlakis, A. Prater-Bennette and P. P. Markopoulos, "L1-norm higher-order orthogonal iterations for robust tensor analysis," *IEEE ICASSP*, 2020.
+- M. Mozaffari, P. P. Markopoulos and A. Prater-Bennette, "Improved L1-Tucker via L1-Fitting," *EUSIPCO*, 2021, pp. 1075-1079.
+
+If you use L1T-L1F, please cite
+
+```bibtex
+@inproceedings{mozaffari2021improved,
+  title={Improved L1-Tucker via L1-Fitting},
+  author={Mozaffari, Mahsa and Markopoulos, Panos P and Prater-Bennette, Ashley},
+  booktitle={2021 29th European Signal Processing Conference (EUSIPCO)},
+  pages={1075--1079},
+  year={2021},
+  organization={IEEE}
+}
+```

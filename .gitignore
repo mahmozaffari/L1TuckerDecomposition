@@ -1,8 +1,9 @@
-
-Algorithms/L1HOOI.asv
-*.asv
-Algorithms/L1HOOI.asv
-*.asv
 *.asv
 *.mat
-*.mat
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+results/
